@@ -31,7 +31,18 @@
                             <outlet property="delegate" destination="Go1-1V-lUH" id="DyO-3Q-BXC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="FJZ-wF-vpU"/>
+                    <navigationItem key="navigationItem" id="FJZ-wF-vpU">
+                        <barButtonItem key="rightBarButtonItem" title="Add New Item" id="XRW-97-PPW">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="Go1-1V-lUH" id="ENJ-mn-okE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="addButton" destination="XRW-97-PPW" id="ssW-Yu-WoQ"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XmZ-0N-VC5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

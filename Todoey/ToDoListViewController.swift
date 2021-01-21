@@ -12,6 +12,8 @@ class ToDoListViewController: UITableViewController {
     
     let itemArray = ["Hello", "Darkness", "My old friend"]
 
+    @IBOutlet weak var addButton: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -44,6 +46,19 @@ class ToDoListViewController: UITableViewController {
         } else {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
+    }
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+           print("Success")
+        }
+        alert.addTextField { (alertTextFiled) in
+            alertTextFiled.placeholder = "Create new item"
+            print(alertTextFiled.text)
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
 }
 
