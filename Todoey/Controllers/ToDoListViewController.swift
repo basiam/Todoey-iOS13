@@ -10,7 +10,9 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    var itemArray = ["Hello", "Darkness", "My old friend"]
+    var itemArray = [Item]()
+    
+    let defaults = UserDefaults.standard
 
     @IBOutlet weak var addButton: UIBarButtonItem!
     
@@ -18,6 +20,10 @@ class ToDoListViewController: UITableViewController {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+        
+        if let items = defaults.array(forKey: "dasdasdas") as? [Item] {
+            itemArray = items
+        }
         
     }
     
@@ -29,7 +35,14 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].title
+        
+        if itemArray[indexPath.row].done  {
+           tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
         return cell
     }
     
@@ -38,12 +51,11 @@ class ToDoListViewController: UITableViewController {
     // MARK - TableView Delagate method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
         tableView.deselectRow(at: indexPath, animated: true)
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-           tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        tableView.reloadData()
+      
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -52,7 +64,11 @@ class ToDoListViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            self.itemArray.append(textField.text!)
+            
+            let item = Item()
+            item.title = textField.text!
+            self.itemArray.append(item)
+            self.defaults.set(self.itemArray, forKey: "dasdasdas")
             
             self.tableView.reloadData()
         }
