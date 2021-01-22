@@ -22,9 +22,7 @@ class ToDoListViewController: UITableViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        
         loadItems()
-        
     }
     
     // MARK - TableView DataSource Methods
@@ -92,22 +90,31 @@ class ToDoListViewController: UITableViewController {
         }
     }
     
-    func loadItems() {
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("error")
         }
+        tableView.reloadData()
     }
     
 }
 
 
+// MARK - UISearchBarDelegate methods
+
 extension ToDoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        <#code#>
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        let query = searchBar.text!
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems(with: request)
+     
     }
 }
 
