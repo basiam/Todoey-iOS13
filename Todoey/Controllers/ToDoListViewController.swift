@@ -12,18 +12,14 @@ class ToDoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
-
     @IBOutlet weak var addButton: UIBarButtonItem!
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        
-        if let items = defaults.array(forKey: "dasdasdas") as? [Item] {
-            itemArray = items
-        }
         
     }
     
@@ -37,10 +33,12 @@ class ToDoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         cell.textLabel?.text = itemArray[indexPath.row].title
         
+        print(itemArray[indexPath.row].done)
+        
         if itemArray[indexPath.row].done  {
-           tableView.cellForRow(at: indexPath)?.accessoryType = .none
+            cell.accessoryType = .checkmark
         } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+            cell.accessoryType = .none
         }
         
         return cell
@@ -53,10 +51,15 @@ class ToDoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
+        saveItems()
+        
+        
         tableView.deselectRow(at: indexPath, animated: true)
         tableView.reloadData()
       
     }
+    
+ 
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
@@ -68,7 +71,9 @@ class ToDoListViewController: UITableViewController {
             let item = Item()
             item.title = textField.text!
             self.itemArray.append(item)
-            self.defaults.set(self.itemArray, forKey: "dasdasdas")
+            
+           
+            self.saveItems()
             
             self.tableView.reloadData()
         }
@@ -78,6 +83,17 @@ class ToDoListViewController: UITableViewController {
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    
+    fileprivate func saveItems() {
+        do {
+            let encoder = PropertyListEncoder()
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error")
+        }
     }
 }
 
