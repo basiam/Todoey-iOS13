@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Category View Controller-->
+        <!--Todoy-->
         <scene sceneID="a8E-fl-gza">
             <objects>
                 <tableViewController id="bQi-pz-NoM" customClass="CategoryViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -31,20 +31,23 @@
                             <outlet property="delegate" destination="bQi-pz-NoM" id="Xvs-h9-E5d"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="nO6-VP-CXh">
+                    <navigationItem key="navigationItem" title="Todoy" id="nO6-VP-CXh">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="UwY-Lq-RRN">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="bQi-pz-NoM" id="yEV-TG-iUd"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="Go1-1V-lUH" kind="show" identifier="GoToItem" id="mMn-U5-ngN"/>
+                        <segue destination="Go1-1V-lUH" kind="show" identifier="GoToItems" id="mMn-U5-ngN"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GV5-B0-HAs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1491" y="98"/>
         </scene>
-        <!--To Do List View Controller-->
+        <!--Items-->
         <scene sceneID="zh7-TM-dcu">
             <objects>
                 <tableViewController id="Go1-1V-lUH" customClass="ToDoListViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -75,7 +78,7 @@
                             <outlet property="delegate" destination="Go1-1V-lUH" id="DyO-3Q-BXC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="FJZ-wF-vpU">
+                    <navigationItem key="navigationItem" title="Items" id="FJZ-wF-vpU">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="XRW-97-PPW">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>

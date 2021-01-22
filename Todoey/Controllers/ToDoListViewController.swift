@@ -14,13 +14,34 @@ class ToDoListViewController: UITableViewController {
     @IBOutlet weak var addButton: UIBarButtonItem!
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var itemArray = [Item]()
+    var selectedCategory : Category? {
+        didSet {
+            loadItems()
+        }
+    }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
+        super.viewDidLoad()        
+    }
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        var textField = UITextField()
         
-        loadItems()
+        let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            let item = Item(context: self.context)
+            item.parentCategory = self.selectedCategory
+            item.title = textField.text!
+            self.itemArray.append(item)
+            self.saveItems()
+            
+        }
+        alert.addTextField { (alertTextFiled) in
+            alertTextFiled.placeholder = "Create new item"
+            textField = alertTextFiled
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK - TableView DataSource Methods
@@ -48,35 +69,26 @@ class ToDoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        var textField = UITextField()
-        
-        let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
-        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            let item = Item(context: self.context)
-            item.title = textField.text!
-            self.itemArray.append(item)
-            self.saveItems()
-            self.tableView.reloadData()
-        }
-        alert.addTextField { (alertTextFiled) in
-            alertTextFiled.placeholder = "Create new item"
-            textField = alertTextFiled
-        }
-        alert.addAction(action)
-        present(alert, animated: true, completion: nil)
-    }
     
-    
+    //MARK - Data manipulation methods
     func saveItems() {
         do {
             try context.save()
         } catch {
             print("error")
         }
+        tableView.reloadData()
     }
     
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+        let categoryPredicate = NSPredicate(format: "parentCategory.name Matches %@", selectedCategory!.name!)
+        
+        if let additionalPredicate = predicate {
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+            request.predicate = compoundPredicate
+        } else {
+            request.predicate = categoryPredicate
+        }
         do {
             itemArray = try context.fetch(request)
         } catch {
@@ -93,10 +105,10 @@ extension ToDoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request : NSFetchRequest<Item> = Item.fetchRequest()
         let query = searchBar.text!
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
