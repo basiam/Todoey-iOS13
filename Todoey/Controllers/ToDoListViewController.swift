@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class ToDoListViewController: SwipeViewController {
     
@@ -21,7 +22,8 @@ class ToDoListViewController: SwipeViewController {
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()
+        tableView.separatorStyle = .none
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -59,6 +61,10 @@ class ToDoListViewController: SwipeViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = todoItems?[indexPath.row].title ?? "Add items"
+        if let color =  UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+        }
         if let item = todoItems?[indexPath.row] {
             if item.done  {
                 cell.accessoryType = .checkmark
