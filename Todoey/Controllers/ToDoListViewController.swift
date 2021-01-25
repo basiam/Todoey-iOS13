@@ -22,7 +22,6 @@ class ToDoListViewController: SwipeViewController {
         }
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
@@ -35,7 +34,6 @@ class ToDoListViewController: SwipeViewController {
                 navigationController?.navigationBar.tintColor = ContrastColorOf(bgColor, returnFlat: true)
                 title = selectedCategory!.name
                 searchBar.backgroundColor = bgColor
-               
                 searchBar.tintColor = ContrastColorOf(bgColor, returnFlat: true)
             }
         }
@@ -120,7 +118,6 @@ class ToDoListViewController: SwipeViewController {
         }
     }
 }
-
 
 // MARK - UISearchBarDelegate methods
 extension ToDoListViewController: UISearchBarDelegate {
