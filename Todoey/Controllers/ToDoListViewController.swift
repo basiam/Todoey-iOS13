@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeViewController {
     
     @IBOutlet weak var addButton: UIBarButtonItem!
     let realm = try! Realm()
@@ -57,7 +57,7 @@ class ToDoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = todoItems?[indexPath.row].title ?? "Add items"
         if let item = todoItems?[indexPath.row] {
             if item.done  {
@@ -77,7 +77,7 @@ class ToDoListViewController: UITableViewController {
                     item.done = !item.done
                 }
             } catch {}
-           
+            
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.reloadData()
         }
@@ -88,11 +88,20 @@ class ToDoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let todoItemForDeletion = self.todoItems?[indexPath.row] {
+            do {
+                try self.realm.write{
+                    self.realm.delete(todoItemForDeletion)
+                }
+            } catch {}
+        }
+    }
 }
 
 
 // MARK - UISearchBarDelegate methods
-
 extension ToDoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
