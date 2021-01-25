@@ -22,6 +22,10 @@ class CategoryViewController: SwipeViewController {
         tableView.separatorStyle = .none
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.backgroundColor = UIColor(hexString: "1D9BF6")
+    }
+    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         
@@ -48,10 +52,11 @@ class CategoryViewController: SwipeViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let category = categories?[indexPath.row] {
-          cell.backgroundColor = UIColor(hexString: category.color)
-          cell.textLabel?.text = category.name
+            cell.backgroundColor = UIColor(hexString: category.color)
+            cell.textLabel?.text = category.name
+            cell.textLabel?.textColor =  ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         }
-       
+        
         return cell
     }
     

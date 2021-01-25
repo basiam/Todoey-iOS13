@@ -13,6 +13,7 @@ import ChameleonFramework
 class ToDoListViewController: SwipeViewController {
     
     @IBOutlet weak var addButton: UIBarButtonItem!
+    @IBOutlet weak var searchBar: UISearchBar!
     let realm = try! Realm()
     var todoItems: Results<Item>?
     var selectedCategory : Category? {
@@ -21,9 +22,23 @@ class ToDoListViewController: SwipeViewController {
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let colorHex = selectedCategory?.color {
+            if let bgColor = UIColor(hexString: colorHex) {
+                navigationController?.navigationBar.backgroundColor = bgColor
+                navigationController?.navigationBar.tintColor = ContrastColorOf(bgColor, returnFlat: true)
+                title = selectedCategory!.name
+                searchBar.backgroundColor = bgColor
+               
+                searchBar.tintColor = ContrastColorOf(bgColor, returnFlat: true)
+            }
+        }
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
